@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MethodArgsProvider {
-    int param1 = 2;
-    int param2 = 5;
+    int param1() default 10;
+    int param2() default 25;
 }
