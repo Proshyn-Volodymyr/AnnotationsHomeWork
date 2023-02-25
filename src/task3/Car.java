@@ -5,17 +5,14 @@ public class Car {
     private String brand;
     @Save
     private String model;
-    private String engineType;
     @Save
+    private String engineType;
+
     private int price;
     @Save
     private boolean isAvailable;
 
     public Car() {
-        this.brand = "Audi";
-        this.model = "Q8";
-        this.engineType = "V6";
-        this.price = 80000;
     }
 
     public String getBrand() {
@@ -48,5 +45,24 @@ public class Car {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", engineType='" + engineType + '\'' +
+                ", price=" + price +
+                ", isAvailable=" + isAvailable +
+                '}';
     }
 }
