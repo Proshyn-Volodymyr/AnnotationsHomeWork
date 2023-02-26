@@ -1,18 +1,20 @@
 package task3;
 
 public class Car {
-    @Save
+
     private String brand;
-    @Save
     private String model;
     @Save
     private String engineType;
 
-    private int price;
+    private Transmission transmission;
     @Save
+    private int price;
+
     private boolean isAvailable;
 
-    public Car() {
+    public Car(Transmission transmission) {
+        this.transmission = transmission;
     }
 
     public String getBrand() {
@@ -37,6 +39,14 @@ public class Car {
 
     public void setEngineType(String engineType) {
         this.engineType = engineType;
+    }
+
+    public Transmission getTransmission() {
+        return transmission;
+    }
+
+    public void setTransmission(Transmission transmission) {
+        this.transmission = transmission;
     }
 
     public int getPrice() {

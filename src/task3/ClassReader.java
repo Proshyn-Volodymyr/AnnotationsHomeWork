@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ClassReader {
     public static Object readFromJson(File jsonFile, Class<?> clazz) throws NoSuchFieldException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        Constructor constructor = Car.class.getConstructor();
+        Constructor constructor = clazz.getConstructor();
         Object newObject = constructor.newInstance();
         try (FileReader fileReader = new FileReader(jsonFile)) {
 

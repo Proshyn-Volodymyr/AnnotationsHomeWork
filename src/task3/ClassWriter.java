@@ -2,19 +2,23 @@ package task3;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public class ClassWriter {
     public static void saveToJson(Object object, String path) throws IOException, IllegalAccessException {
+
         FileWriter fileWriter = new FileWriter(path);
         Field[] fields = object.getClass().getDeclaredFields();
         fileWriter.write("{" + System.lineSeparator());
         for (int i = 0; fields.length > i; i++
         ) {
             Field field = fields[i];
+
             field.setAccessible(true);
-            Class fieldType = field.getType();
+            Class<?> fieldType = field.getType();
             Object fieldValue = field.get(object);
+
             if (field.isAnnotationPresent(Save.class)) {
                 fileWriter.write("\"" + field.getName() + "\"" + ": ");
                 if (fieldValue == null) {
