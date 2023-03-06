@@ -1,15 +1,16 @@
 package task3;
 
 public class Transmission {
-
+    @Save
     private String type;
-
+    @Save
     private int amountOfSpeed;
 
     public Transmission(String type, int amountOfSpeed) {
         this.type = type;
         this.amountOfSpeed = amountOfSpeed;
     }
+
     public Transmission() {
     }
 

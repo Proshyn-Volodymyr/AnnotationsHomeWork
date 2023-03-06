@@ -19,7 +19,6 @@ public class Car {
         this.transmission = transmission;
     }
     public Car(){
-
     }
 
     public String getBrand() {
