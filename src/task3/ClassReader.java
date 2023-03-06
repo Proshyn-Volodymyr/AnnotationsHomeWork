@@ -1,5 +1,7 @@
 package task3;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,9 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class ClassReader {
-    public static Object readFromJson(File jsonFile, Class<?> clazz) throws NoSuchFieldException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        Constructor constructor = Car.class.getConstructor();
-        Object newObject = constructor.newInstance();
+    public  Object readFromJsonFile(File jsonFile, Object object) throws InstantiationException, IllegalAccessException {
+        Class classObject = object.getClass();
         try (FileReader fileReader = new FileReader(jsonFile)) {
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -19,31 +20,47 @@ public class ClassReader {
                 stringBuilder.append((char) nextChar);
             }
             String parsedString = stringBuilder.toString();
-            parsedString = parsedString.replaceAll("[{}\"]", "");
-            String[] parsedFields = parsedString.split(",");
-            for (String pairs : parsedFields
-            ) {
-                String[] keyAndValue = pairs.split(":");
-                String fieldName = keyAndValue[0].trim();
-                String fieldValue = keyAndValue[1].trim();
-                Field field = clazz.getDeclaredField(fieldName);
-                field.setAccessible(true);
-                Class<?> fieldType = field.getType();
-                if(!field.isAnnotationPresent(Save.class)){
-                    field.set(newObject, null);
-                }
+            try {
+                try {
+                    readString(parsedString, classObject);
 
-                if (fieldType == Integer.class || fieldType == int.class) {
-                    field.set(newObject, Integer.parseInt(fieldValue));
-                } else if (fieldType == Boolean.class || fieldType == boolean.class) {
-                    field.set(newObject, Boolean.valueOf(fieldValue));
-                } else {
-                    field.set(newObject, fieldValue);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
                 }
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return newObject;
+        return object;
     }
+
+    private void readString(String inputString, Class<?> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        Constructor constructor = clazz.getConstructor();
+        Object newObj = constructor.newInstance();
+        JSONObject jsonObject = new JSONObject(inputString);
+        for (String key : jsonObject.keySet()
+        ) {
+            Object value = jsonObject.get(key);
+            Field field = clazz.getDeclaredField(key);
+            field.setAccessible(true);
+            Class<?> fieldType = field.getType();
+            if (value instanceof JSONObject) {
+                readString(value.toString(), fieldType);
+            }else{
+                if (fieldType == Integer.class || fieldType == int.class) {
+                    field.set(newObj, Integer.parseInt(value.toString()));
+                } else if (fieldType == Boolean.class || fieldType == boolean.class) {
+                    field.set(newObj, Boolean.valueOf(value.toString()));
+                } else if(fieldType == String.class){
+                    field.set(newObj, value.toString());
+                }
+            }
+        }
+    }
+
 }
