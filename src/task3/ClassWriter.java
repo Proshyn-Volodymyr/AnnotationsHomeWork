@@ -1,42 +1,41 @@
 package task3;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class ClassWriter {
-    public static void saveToJson(Object object, String path) throws IOException, IllegalAccessException {
-        FileWriter fileWriter = new FileWriter(path);
+    public static <T> String saveToJson(T object, String path) throws IOException, IllegalAccessException {
         Field[] fields = object.getClass().getDeclaredFields();
-        fileWriter.write("{" + System.lineSeparator());
-        for (int i = 0; fields.length > i; i++
-        ) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{" + System.lineSeparator());
+        for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
             field.setAccessible(true);
             Class fieldType = field.getType();
             Object fieldValue = field.get(object);
             if (field.isAnnotationPresent(Save.class)) {
-                fileWriter.write("\"" + field.getName() + "\"" + ": ");
+                stringBuilder.append("\"" + field.getName() + "\"" + ": ");
                 if (fieldValue == null) {
-                    fileWriter.write("null");
+                    stringBuilder.append("null");
                 } else if (fieldType == char.class || fieldType == Character.class) {
-                    fileWriter.write("\"" + fieldValue + "\"");
+                    stringBuilder.append("\"" + fieldValue + "\"");
                 } else if (fieldType == String.class) {
-                    fileWriter.write("\"" + fieldValue + "\"");
+                    stringBuilder.append("\"" + fieldValue + "\"");
                 } else if (fieldType == boolean.class || fieldType == Boolean.class) {
-                    fileWriter.write(fieldValue.toString());
+                    stringBuilder.append(fieldValue);
                 } else if (fieldType == int.class || fieldType == Integer.class) {
-                    fileWriter.write(fieldValue.toString());
+                    stringBuilder.append(fieldValue);
                 } else {
-                    saveToJson(fieldValue, path);
+                    stringBuilder.append(saveToJson(fieldValue, path));
                 }
                 if (fields.length - 1 > i) {
-                    fileWriter.write(",");
+                    stringBuilder.append(",");
                 }
-                    fileWriter.write(System.lineSeparator());
+                stringBuilder.append(System.lineSeparator());
             }
         }
-        fileWriter.write("}");
-        fileWriter.close();
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }
