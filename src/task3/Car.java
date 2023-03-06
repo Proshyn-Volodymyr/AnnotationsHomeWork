@@ -5,14 +5,21 @@ public class Car {
     private String brand;
     @Save
     private String model;
-    @Save
     private String engineType;
 
     private int price;
     @Save
+    private Transmission transmission;
+    @Save
     private boolean isAvailable;
 
-    public Car() {
+    public Car(Transmission transmission) {
+        this.brand = "Audi";
+        this.model = "Q8";
+        this.transmission = transmission;
+    }
+    public Car(){
+
     }
 
     public String getBrand() {
@@ -55,6 +62,14 @@ public class Car {
         isAvailable = available;
     }
 
+    public Transmission getTransmission() {
+        return transmission;
+    }
+
+    public void setTransmission(Transmission transmission) {
+        this.transmission = transmission;
+    }
+
     @Override
     public String toString() {
         return "Car{" +
@@ -62,6 +77,7 @@ public class Car {
                 ", model='" + model + '\'' +
                 ", engineType='" + engineType + '\'' +
                 ", price=" + price +
+                ", transmission=" + transmission +
                 ", isAvailable=" + isAvailable +
                 '}';
     }
